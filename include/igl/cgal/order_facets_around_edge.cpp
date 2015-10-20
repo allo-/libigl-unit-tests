@@ -33,7 +33,7 @@ TEST(OrderFacetsAroundEdge, ConsistentOrdering) {
     ASSERT_EQ(adj_faces_1[order_1[1]], adj_faces_2[order_2[1]]);
 }
 
-TEST(OrderFacetAroundEdge, PivotCoincideWithVertex) {
+TEST(OrderFacetsAroundEdge, PivotCoincideWithVertex) {
     Eigen::MatrixXd V(6, 3);
     V << 0.0, 0.0, 0.0, // 0
          1.0, 0.0, 0.0, // 1
@@ -63,7 +63,7 @@ TEST(OrderFacetAroundEdge, PivotCoincideWithVertex) {
     ASSERT_EQ(2, order[3]);
 }
 
-TEST(OrderFacetAroundEdge, DuplicatedFacets) {
+TEST(OrderFacetsAroundEdge, DuplicatedFacets) {
     Eigen::MatrixXd V(6, 3);
     V << 0.0, 0.0, 0.0,
          1.0, 0.0, 0.0,
@@ -102,7 +102,7 @@ TEST(OrderFacetAroundEdge, DuplicatedFacets) {
     ASSERT_EQ(1, order_2[3]);
 }
 
-TEST(OrderFacetAroundEdge, DuplicatedFacetsCoplanarWithPivot) {
+TEST(OrderFacetsAroundEdge, DuplicatedFacetsCoplanarWithPivot) {
     Eigen::MatrixXd V(6, 3);
     V << 0.0, 0.0, 0.0,
          1.0, 0.0, 0.0,
@@ -141,7 +141,7 @@ TEST(OrderFacetAroundEdge, DuplicatedFacetsCoplanarWithPivot) {
     ASSERT_EQ(1, order_2[3]);
 }
 
-TEST(OrderFacetAroundEdge, PivotOnEdge) {
+TEST(OrderFacetsAroundEdge, PivotOnEdge) {
     Eigen::MatrixXd V(6, 3);
     V << 0.0, 0.0, 0.0,
          1.0, 0.0, 0.0,
@@ -164,7 +164,7 @@ TEST(OrderFacetAroundEdge, PivotOnEdge) {
             pivot, order));
 }
 
-TEST(OrderFacetAroundEdge, AllFacetsAreDegenerated) {
+TEST(OrderFacetsAroundEdge, AllFacetsAreDegenerated) {
     Eigen::MatrixXd V(4, 3);
     V << 0.0, 0.0, 0.0,
          1.0, 0.0, 0.0,
@@ -183,7 +183,7 @@ TEST(OrderFacetAroundEdge, AllFacetsAreDegenerated) {
             pivot, order));
 }
 
-TEST(OrderFacetAroundEdge, OneDegeratedFacet) {
+TEST(OrderFacetsAroundEdge, OneDegeratedFacet) {
     Eigen::MatrixXd V(4, 3);
     V << 0.0, 0.0, 0.0,
          1.0, 0.0, 0.0,
