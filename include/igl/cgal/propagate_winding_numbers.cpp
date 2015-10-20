@@ -202,3 +202,62 @@ TEST(PropagateWindingNumbers, NestedNonManifoldCubeSameLabel) {
     ASSERT_TRUE((W.block(0, 0, num_faces, 2).array() >= 2).all());
     ASSERT_TRUE((W.block(num_faces, 0, num_faces, 2).array() <= 2).all());
 }
+
+TEST(PropagateWindingNumbers, NestedNonManifoldCubeDifferentLabel2) {
+    Eigen::MatrixXd V1;
+    Eigen::MatrixXi F1;
+    test_common::load_mesh("non_manifold_double_cube_2.obj", V1, F1);
+
+    Eigen::Vector3d center =
+        (V1.colwise().maxCoeff() + V1.colwise().minCoeff()).eval() /2.0;
+
+    const size_t num_vertices = V1.rows();
+    const size_t num_faces = F1.rows();
+    Eigen::MatrixXd V(2*num_vertices, 3);
+    Eigen::MatrixXi F(2*num_faces, 3);
+
+    V << (V1.rowwise()-center.transpose()) * 0.1,
+         (V1.rowwise()-center.transpose()) * 10;
+    F << F1, F1.array() + num_vertices;
+
+    Eigen::VectorXi labels(num_faces*2);
+    labels << Eigen::VectorXi::Zero(num_faces),
+              Eigen::VectorXi::Ones(num_faces);
+
+    Eigen::MatrixXi W;
+    igl::cgal::propagate_winding_numbers(V, F, labels, W);
+
+    ASSERT_TRUE((W.block(0, 0, num_faces, 2).array() <= 2).all());
+    ASSERT_TRUE((W.block(0, 2, num_faces, 2).array() == 2).all());
+
+    ASSERT_TRUE((W.block(num_faces, 0, num_faces, 2).array() == 0).all());
+    ASSERT_TRUE((W.block(num_faces, 2, num_faces, 2).array() <= 2).all());
+}
+
+TEST(PropagateWindingNumbers, NestedNonManifoldCubeSameLabel2) {
+    Eigen::MatrixXd V1;
+    Eigen::MatrixXi F1;
+    test_common::load_mesh("non_manifold_double_cube_2.obj", V1, F1);
+
+    Eigen::Vector3d center =
+        (V1.colwise().maxCoeff() + V1.colwise().minCoeff()).eval() /2.0;
+
+    const size_t num_vertices = V1.rows();
+    const size_t num_faces = F1.rows();
+    Eigen::MatrixXd V(2*num_vertices, 3);
+    Eigen::MatrixXi F(2*num_faces, 3);
+
+    V << (V1.rowwise()-center.transpose()) * 0.1,
+         (V1.rowwise()-center.transpose()) * 10;
+    F << F1, F1.array() + num_vertices;
+
+    Eigen::VectorXi labels(num_faces*2);
+    labels.setZero();
+
+    Eigen::MatrixXi W;
+    igl::cgal::propagate_winding_numbers(V, F, labels, W);
+
+    ASSERT_TRUE((W.block(0, 0, num_faces, 2).array() >= 2).all());
+    ASSERT_TRUE((W.block(num_faces, 0, num_faces, 2).array() <= 2).all());
+}
+

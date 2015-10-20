@@ -157,20 +157,24 @@ TEST(ClosestFacet, OutsideCubeCheck) {
     Eigen::MatrixXi F;
     test_common::load_mesh("cube.obj", V, F);
 
-    Eigen::MatrixXd P(6, 3);
+    Eigen::MatrixXd P(10, 3);
     P << 1.1, 0.0, 0.0,
         -1.1, 0.0, 0.0,
          0.0, 1.1, 0.0,
          0.0,-1.1, 0.0,
          0.0, 0.0, 1.1,
-         0.0, 0.0,-1.1;
+         0.0, 0.0,-1.1,
+         1.1, 1.1, 0.0,
+         0.0, 1.1, 1.1,
+         1.1, 0.0, 1.1,
+         1.1, 1.1, 1.1;
 
     Eigen::VectorXi index, orientation;
     igl::cgal::closest_facet(V, F, P,
             index, orientation);
 
-    ASSERT_EQ(6, index.size());
-    ASSERT_EQ(6, orientation.size());
+    ASSERT_EQ(P.rows(), index.size());
+    ASSERT_EQ(P.rows(), orientation.size());
     ASSERT_TRUE((orientation.array() != 0).all());
 }
 
@@ -179,19 +183,23 @@ TEST(ClosestFacet, InsideCubeCheck) {
     Eigen::MatrixXi F;
     test_common::load_mesh("cube.obj", V, F);
 
-    Eigen::MatrixXd P(6, 3);
+    Eigen::MatrixXd P(10, 3);
     P << 0.1, 0.0, 0.0,
         -0.1, 0.0, 0.0,
          0.0, 0.1, 0.0,
          0.0,-0.1, 0.0,
          0.0, 0.0, 0.1,
-         0.0, 0.0,-0.1;
+         0.0, 0.0,-0.1,
+         0.1, 0.1, 0.0,
+         0.0, 0.1, 0.1,
+         0.1, 0.0, 0.1,
+         0.1, 0.1, 0.1 ;
 
     Eigen::VectorXi index, orientation;
     igl::cgal::closest_facet(V, F, P,
             index, orientation);
 
-    ASSERT_EQ(6, index.size());
-    ASSERT_EQ(6, orientation.size());
+    ASSERT_EQ(P.rows(), index.size());
+    ASSERT_EQ(P.rows(), orientation.size());
     ASSERT_TRUE((orientation.array() == 0).all());
 }
