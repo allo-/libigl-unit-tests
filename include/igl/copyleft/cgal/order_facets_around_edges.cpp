@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
-#include <igl/cgal/order_facets_around_edges.h>
+#include <igl/copyleft/cgal/order_facets_around_edges.h>
 #include <igl/unique_edge_map.h>
 #include <igl/readDMAT.h>
 #include <igl/per_face_normals.h>
@@ -55,9 +55,9 @@ void assert_order(
         //igl::per_face_normals_stable(V, F, N);
         //igl::per_face_normals(V, F, N);
         test_common::load_matrix(normal, N);
-        igl::cgal::order_facets_around_edges(V, F, N, uE, uE2E, uE2oE, uE2C);
+        igl::copyleft::cgal::order_facets_around_edges(V, F, N, uE, uE2E, uE2oE, uE2C);
     } else {
-        igl::cgal::order_facets_around_edges(V, F, uE, uE2E, uE2oE, uE2C);
+        igl::copyleft::cgal::order_facets_around_edges(V, F, uE, uE2E, uE2oE, uE2C);
     }
 
     const size_t num_uE = uE.rows();

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include <igl/cgal/order_facets_around_edge.h>
+#include <igl/copyleft/cgal/order_facets_around_edge.h>
 
 TEST(OrderFacetsAroundEdge, ConsistentOrdering) {
     Eigen::MatrixXd V(4, 3);
@@ -24,10 +24,10 @@ TEST(OrderFacetsAroundEdge, ConsistentOrdering) {
     pivot << 8.33333, 1.66667, -15;
 
     Eigen::VectorXi order_1;
-    igl::cgal::order_facets_around_edge(V, F, 3, 2, adj_faces_1, pivot, order_1);
+    igl::copyleft::cgal::order_facets_around_edge(V, F, 3, 2, adj_faces_1, pivot, order_1);
 
     Eigen::VectorXi order_2;
-    igl::cgal::order_facets_around_edge(V, F, 3, 2, adj_faces_2, pivot, order_2);
+    igl::copyleft::cgal::order_facets_around_edge(V, F, 3, 2, adj_faces_2, pivot, order_2);
 
     ASSERT_EQ(adj_faces_1[order_1[0]], adj_faces_2[order_2[0]]);
     ASSERT_EQ(adj_faces_1[order_1[1]], adj_faces_2[order_2[1]]);
@@ -54,7 +54,7 @@ TEST(OrderFacetsAroundEdge, PivotCoincideWithVertex) {
     pivot << 0.5, 1.0, 0.0;
 
     Eigen::VectorXi order;
-    igl::cgal::order_facets_around_edge(V, F, 0, 1, adj_faces, pivot, order);
+    igl::copyleft::cgal::order_facets_around_edge(V, F, 0, 1, adj_faces, pivot, order);
 
     ASSERT_EQ(4, order.size());
     ASSERT_EQ(0, order[0]);
@@ -81,7 +81,7 @@ TEST(OrderFacetsAroundEdge, DuplicatedFacets) {
     pivot_1 << 0.5, 0.0, 1.0;
 
     Eigen::VectorXi order_1;
-    igl::cgal::order_facets_around_edge(V, F, 0, 1, {-1, 2, -3, 4},
+    igl::copyleft::cgal::order_facets_around_edge(V, F, 0, 1, {-1, 2, -3, 4},
             pivot_1, order_1);
 
     ASSERT_EQ(0, order_1[0]);
@@ -93,7 +93,7 @@ TEST(OrderFacetsAroundEdge, DuplicatedFacets) {
     pivot_2 << 0.5, 0.0,-1.0;
 
     Eigen::VectorXi order_2;
-    igl::cgal::order_facets_around_edge(V, F, 0, 1, {-1, 2, -3, 4},
+    igl::copyleft::cgal::order_facets_around_edge(V, F, 0, 1, {-1, 2, -3, 4},
             pivot_2, order_2);
 
     ASSERT_EQ(2, order_2[0]);
@@ -120,7 +120,7 @@ TEST(OrderFacetsAroundEdge, DuplicatedFacetsCoplanarWithPivot) {
     pivot_1 << 0.5, 1.0, 0.0;
 
     Eigen::VectorXi order_1;
-    igl::cgal::order_facets_around_edge(V, F, 0, 1, {-1, 2, -3, 4},
+    igl::copyleft::cgal::order_facets_around_edge(V, F, 0, 1, {-1, 2, -3, 4},
             pivot_1, order_1);
 
     ASSERT_EQ(0, order_1[0]);
@@ -132,7 +132,7 @@ TEST(OrderFacetsAroundEdge, DuplicatedFacetsCoplanarWithPivot) {
     pivot_2 << 0.5,-1.0, 0.0;
 
     Eigen::VectorXi order_2;
-    igl::cgal::order_facets_around_edge(V, F, 0, 1, {-1, 2, -3, 4},
+    igl::copyleft::cgal::order_facets_around_edge(V, F, 0, 1, {-1, 2, -3, 4},
             pivot_2, order_2);
 
     ASSERT_EQ(2, order_2[0]);
@@ -159,7 +159,7 @@ TEST(OrderFacetsAroundEdge, PivotOnEdge) {
     pivot << 0.5, 0.0, 0.0;
 
     Eigen::VectorXi order;
-    ASSERT_ANY_THROW(igl::cgal::order_facets_around_edge(
+    ASSERT_ANY_THROW(igl::copyleft::cgal::order_facets_around_edge(
             V, F, 0, 1, {-1, 2, -3, 4},
             pivot, order));
 }
@@ -178,7 +178,7 @@ TEST(OrderFacetsAroundEdge, AllFacetsAreDegenerated) {
     pivot << 0.5, 1.0, 0.0;
 
     Eigen::VectorXi order;
-    ASSERT_ANY_THROW(igl::cgal::order_facets_around_edge(
+    ASSERT_ANY_THROW(igl::copyleft::cgal::order_facets_around_edge(
             V, F, 0, 1, {-1, 2},
             pivot, order));
 }
@@ -197,7 +197,7 @@ TEST(OrderFacetsAroundEdge, OneDegeratedFacet) {
     pivot << 0.5, 1.0, 0.0;
 
     Eigen::VectorXi order;
-    ASSERT_ANY_THROW(igl::cgal::order_facets_around_edge(
+    ASSERT_ANY_THROW(igl::copyleft::cgal::order_facets_around_edge(
             V, F, 0, 1, {-1, 2},
             pivot, order));
 }

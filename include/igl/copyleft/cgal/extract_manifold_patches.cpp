@@ -3,7 +3,7 @@
 #include <vector>
 
 #include <igl/extract_manifold_patches.h>
-#include <igl/cgal/remesh_self_intersections.h>
+#include <igl/copyleft/cgal/remesh_self_intersections.h>
 #include <igl/unique_edge_map.h>
 #include <igl/writeOBJ.h>
 
@@ -42,8 +42,8 @@ TEST(ExtractManifoldPatches, DoubleCube) {
     Eigen::MatrixXi FF, IF;
     Eigen::VectorXi J, IM;
 
-    igl::cgal::RemeshSelfIntersectionsParam param;
-    igl::cgal::remesh_self_intersections(V, F, param,
+    igl::copyleft::cgal::RemeshSelfIntersectionsParam param;
+    igl::copyleft::cgal::remesh_self_intersections(V, F, param,
         VV, FF, IF, J, IM);
     std::for_each(FF.data(), FF.data() + FF.size(), [&](int& a){a = IM[a];});
 
@@ -56,4 +56,32 @@ TEST(ExtractManifoldPatches, DoubleCube) {
     ASSERT_EQ(FF.rows(), P.size());
     ASSERT_EQ(4, num_patches);
     ASSERT_EQ(3, P.maxCoeff());
+}
+
+TEST(ExtractManifoldPatches, Debug) {
+    Eigen::MatrixXd V;
+    Eigen::MatrixXi F;
+    test_common::load_mesh("manifold_patch_debug.obj", V, F);
+
+    Eigen::MatrixXi E, uE;
+    Eigen::VectorXi EMAP, P;
+    std::vector<std::vector<size_t> > uE2E;
+    igl::unique_edge_map(F, E, uE, EMAP, uE2E);
+    size_t num_patches = igl::extract_manifold_patches(F, EMAP, uE2E, P);
+
+    ASSERT_EQ(9, num_patches);
+}
+
+TEST(ExtractManifoldPatches, TetWithDuplicatedFaces) {
+    Eigen::MatrixXd V;
+    Eigen::MatrixXi F;
+    test_common::load_mesh("tet_with_duplicated_faces.ply", V, F);
+
+    Eigen::MatrixXi E, uE;
+    Eigen::VectorXi EMAP, P;
+    std::vector<std::vector<size_t> > uE2E;
+    igl::unique_edge_map(F, E, uE, EMAP, uE2E);
+    size_t num_patches = igl::extract_manifold_patches(F, EMAP, uE2E, P);
+
+    ASSERT_EQ(5, num_patches);
 }

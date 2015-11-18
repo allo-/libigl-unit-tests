@@ -1,84 +1,8 @@
 #include <test_common.h>
 #include <iostream>
 
-#include <igl/cgal/propagate_winding_numbers.h>
+#include <igl/copyleft/cgal/propagate_winding_numbers.h>
 #include <igl/writeOBJ.h>
-
-TEST(PropagateWindingNumbers, Cube) {
-    Eigen::MatrixXd V;
-    Eigen::MatrixXi F;
-    test_common::load_mesh("cube.obj", V, F);
-    const size_t num_faces = F.rows();
-
-    Eigen::MatrixXi W;
-    ASSERT_TRUE(
-        igl::cgal::propagate_winding_numbers_single_component(V, F, W));
-
-    ASSERT_EQ(num_faces, W.rows());
-    ASSERT_TRUE((W.col(0).array() == 0).all());
-    ASSERT_TRUE((W.col(1).array() == 1).all());
-    ASSERT_TRUE((W.col(0).array() < W.col(1).array()).all());
-}
-
-TEST(PropagateWindingNumbers, DoubleCube) {
-    Eigen::MatrixXd V;
-    Eigen::MatrixXi F;
-    test_common::load_mesh("non_manifold_double_cube.obj", V, F);
-    const size_t num_faces = F.rows();
-
-    Eigen::MatrixXi W;
-    ASSERT_TRUE(
-            igl::cgal::propagate_winding_numbers_single_component(V, F, W));
-
-    ASSERT_EQ(num_faces, W.rows());
-    ASSERT_EQ(0, W.minCoeff());
-    ASSERT_EQ(2, W.maxCoeff());
-    ASSERT_TRUE((W.col(0).array() < W.col(1).array()).all());
-
-    std::vector<Eigen::Vector3i> outer_hull;
-    for (size_t i=0; i<num_faces; i++) {
-        if (W(i,0)==0 && W(i,1)==1) {
-            outer_hull.push_back(F.row(i));
-        }
-    }
-
-    Eigen::MatrixXi outer_hull_F(outer_hull.size(), 3);
-    for (size_t i=0; i<outer_hull.size(); i++) {
-        outer_hull_F.row(i) = outer_hull[i].transpose();
-    }
-
-    igl::writeOBJ("double_cube_outer_hull.obj", V, outer_hull_F);
-}
-
-TEST(PropagateWindingNumbers, DoubleCube2) {
-    Eigen::MatrixXd V;
-    Eigen::MatrixXi F;
-    test_common::load_mesh("non_manifold_double_cube_2.obj", V, F);
-    const size_t num_faces = F.rows();
-
-    Eigen::MatrixXi W;
-    ASSERT_TRUE(
-            igl::cgal::propagate_winding_numbers_single_component(V, F, W));
-
-    ASSERT_EQ(num_faces, W.rows());
-    ASSERT_EQ(0, W.minCoeff());
-    ASSERT_EQ(2, W.maxCoeff());
-    ASSERT_TRUE((W.col(0).array() < W.col(1).array()).all());
-
-    std::vector<Eigen::Vector3i> outer_hull;
-    for (size_t i=0; i<num_faces; i++) {
-        if (W(i,0)==0 && W(i,1)==1) {
-            outer_hull.push_back(F.row(i));
-        }
-    }
-
-    Eigen::MatrixXi outer_hull_F(outer_hull.size(), 3);
-    for (size_t i=0; i<outer_hull.size(); i++) {
-        outer_hull_F.row(i) = outer_hull[i].transpose();
-    }
-
-    igl::writeOBJ("double_cube_outer_hull_2.obj", V, outer_hull_F);
-}
 
 TEST(PropagateWindingNumbers, NestedCubeDifferentLabel) {
     Eigen::MatrixXd V1;
@@ -98,7 +22,7 @@ TEST(PropagateWindingNumbers, NestedCubeDifferentLabel) {
               Eigen::VectorXi::Ones(F1.rows());
 
     Eigen::MatrixXi W;
-    igl::cgal::propagate_winding_numbers(V, F, labels, W);
+    igl::copyleft::cgal::propagate_winding_numbers(V, F, labels, W);
 
     ASSERT_EQ(F.rows(), W.rows());
     ASSERT_EQ(4, W.cols());
@@ -132,7 +56,7 @@ TEST(PropagateWindingNumbers, NestedCubeSameLabel) {
     labels.setZero();
 
     Eigen::MatrixXi W;
-    igl::cgal::propagate_winding_numbers(V, F, labels, W);
+    igl::copyleft::cgal::propagate_winding_numbers(V, F, labels, W);
 
     ASSERT_EQ(F.rows(), W.rows());
     ASSERT_EQ(2, W.cols());
@@ -167,7 +91,7 @@ TEST(PropagateWindingNumbers, NestedNonManifoldCubeDifferentLabel) {
               Eigen::VectorXi::Ones(num_faces);
 
     Eigen::MatrixXi W;
-    igl::cgal::propagate_winding_numbers(V, F, labels, W);
+    igl::copyleft::cgal::propagate_winding_numbers(V, F, labels, W);
 
     ASSERT_TRUE((W.block(0, 0, num_faces, 2).array() <= 2).all());
     ASSERT_TRUE((W.block(0, 2, num_faces, 2).array() == 2).all());
@@ -197,7 +121,7 @@ TEST(PropagateWindingNumbers, NestedNonManifoldCubeSameLabel) {
     labels.setZero();
 
     Eigen::MatrixXi W;
-    igl::cgal::propagate_winding_numbers(V, F, labels, W);
+    igl::copyleft::cgal::propagate_winding_numbers(V, F, labels, W);
 
     ASSERT_TRUE((W.block(0, 0, num_faces, 2).array() >= 2).all());
     ASSERT_TRUE((W.block(num_faces, 0, num_faces, 2).array() <= 2).all());
@@ -225,7 +149,7 @@ TEST(PropagateWindingNumbers, NestedNonManifoldCubeDifferentLabel2) {
               Eigen::VectorXi::Ones(num_faces);
 
     Eigen::MatrixXi W;
-    igl::cgal::propagate_winding_numbers(V, F, labels, W);
+    igl::copyleft::cgal::propagate_winding_numbers(V, F, labels, W);
 
     ASSERT_TRUE((W.block(0, 0, num_faces, 2).array() <= 2).all());
     ASSERT_TRUE((W.block(0, 2, num_faces, 2).array() == 2).all());
@@ -255,7 +179,7 @@ TEST(PropagateWindingNumbers, NestedNonManifoldCubeSameLabel2) {
     labels.setZero();
 
     Eigen::MatrixXi W;
-    igl::cgal::propagate_winding_numbers(V, F, labels, W);
+    igl::copyleft::cgal::propagate_winding_numbers(V, F, labels, W);
 
     ASSERT_TRUE((W.block(0, 0, num_faces, 2).array() >= 2).all());
     ASSERT_TRUE((W.block(num_faces, 0, num_faces, 2).array() <= 2).all());

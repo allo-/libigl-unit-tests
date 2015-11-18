@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include <igl/cgal/closest_facet.h>
+#include <igl/copyleft/cgal/closest_facet.h>
 
 TEST(ClosestFacet, SingleFacetQueryProjectToCorner) {
     Eigen::MatrixXd V(3, 3);
@@ -19,7 +19,7 @@ TEST(ClosestFacet, SingleFacetQueryProjectToCorner) {
          0.0, 0.0,-1.0;
 
     Eigen::VectorXi index, orientation;
-    igl::cgal::closest_facet(V, F, P,
+    igl::copyleft::cgal::closest_facet(V, F, P,
             index, orientation);
 
     ASSERT_EQ(2, index.size());
@@ -43,7 +43,7 @@ TEST(ClosestFacet, SingleFacetQueryProjectToEdge) {
          0.5, 0.0,-1.0;
 
     Eigen::VectorXi index, orientation;
-    igl::cgal::closest_facet(V, F, P,
+    igl::copyleft::cgal::closest_facet(V, F, P,
             index, orientation);
 
     ASSERT_EQ(2, index.size());
@@ -67,7 +67,7 @@ TEST(ClosestFacet, SingleFacetQueryProjectToFace) {
          0.1, 0.1,-1.0;
 
     Eigen::VectorXi index, orientation;
-    igl::cgal::closest_facet(V, F, P,
+    igl::copyleft::cgal::closest_facet(V, F, P,
             index, orientation);
 
     ASSERT_EQ(2, index.size());
@@ -92,7 +92,7 @@ TEST(ClosestFacet, DuplicatedFacetQueryProjectToCorner) {
          0.0, 0.0,-1.0;
 
     Eigen::VectorXi index, orientation;
-    igl::cgal::closest_facet(V, F, P,
+    igl::copyleft::cgal::closest_facet(V, F, P,
             index, orientation);
 
     ASSERT_EQ(2, index.size());
@@ -117,7 +117,7 @@ TEST(ClosestFacet, DuplicatedFacetQueryProjectToEdge) {
          0.1, 0.0,-1.0;
 
     Eigen::VectorXi index, orientation;
-    igl::cgal::closest_facet(V, F, P,
+    igl::copyleft::cgal::closest_facet(V, F, P,
             index, orientation);
 
     ASSERT_EQ(2, index.size());
@@ -142,7 +142,7 @@ TEST(ClosestFacet, DuplicatedFacetQueryProjectToFace) {
          0.1, 0.1,-1.0;
 
     Eigen::VectorXi index, orientation;
-    igl::cgal::closest_facet(V, F, P,
+    igl::copyleft::cgal::closest_facet(V, F, P,
             index, orientation);
 
     ASSERT_EQ(2, index.size());
@@ -170,7 +170,7 @@ TEST(ClosestFacet, OutsideCubeCheck) {
          1.1, 1.1, 1.1;
 
     Eigen::VectorXi index, orientation;
-    igl::cgal::closest_facet(V, F, P,
+    igl::copyleft::cgal::closest_facet(V, F, P,
             index, orientation);
 
     ASSERT_EQ(P.rows(), index.size());
@@ -196,7 +196,7 @@ TEST(ClosestFacet, InsideCubeCheck) {
          0.1, 0.1, 0.1 ;
 
     Eigen::VectorXi index, orientation;
-    igl::cgal::closest_facet(V, F, P,
+    igl::copyleft::cgal::closest_facet(V, F, P,
             index, orientation);
 
     ASSERT_EQ(P.rows(), index.size());

@@ -1,8 +1,8 @@
 #include <test_common.h>
 #include <Eigen/Core>
-#include <igl/cgal/peel_winding_number_layers.h>
-#include <igl/cgal/remesh_self_intersections.h>
-#include <igl/cgal/RemeshSelfIntersectionsParam.h>
+#include <igl/copyleft/cgal/peel_winding_number_layers.h>
+#include <igl/copyleft/cgal/remesh_self_intersections.h>
+#include <igl/copyleft/cgal/RemeshSelfIntersectionsParam.h>
 #include <igl/remove_unreferenced.h>
 
 TEST(PeelWindingNumberLayers, Cube) {
@@ -11,7 +11,7 @@ TEST(PeelWindingNumberLayers, Cube) {
     test_common::load_mesh("cube.obj", V, F);
 
     Eigen::VectorXi W;
-    size_t num_layers = igl::cgal::peel_winding_number_layers(V, F, W);
+    size_t num_layers = igl::copyleft::cgal::peel_winding_number_layers(V, F, W);
 
     ASSERT_EQ(1, num_layers);
     ASSERT_TRUE((W.array() == 1).all());
@@ -35,7 +35,7 @@ TEST(PeelWindingNumberLayers, NestedCube) {
     }
 
     Eigen::VectorXi W;
-    size_t num_layers = igl::cgal::peel_winding_number_layers(V, F, W);
+    size_t num_layers = igl::copyleft::cgal::peel_winding_number_layers(V, F, W);
 
     ASSERT_EQ(k, num_layers);
     for (size_t i=0; i<k; i++) {
@@ -59,8 +59,8 @@ TEST(PeelWindingNumberLayers, TwoCubes) {
     MatrixXe Vs;
     Eigen::MatrixXi Fs, IF;
     Eigen::VectorXi J, IM;
-    igl::cgal::RemeshSelfIntersectionsParam param;
-    igl::cgal::remesh_self_intersections(V, F, param, Vs, Fs, IF, J, IM);
+    igl::copyleft::cgal::RemeshSelfIntersectionsParam param;
+    igl::copyleft::cgal::remesh_self_intersections(V, F, param, Vs, Fs, IF, J, IM);
 
     std::for_each(Fs.data(),Fs.data()+Fs.size(),
             [&IM](int & a){ a=IM(a); });
@@ -70,7 +70,7 @@ TEST(PeelWindingNumberLayers, TwoCubes) {
     const size_t num_faces = Ft.rows();
 
     Eigen::VectorXi W;
-    size_t num_layers = igl::cgal::peel_winding_number_layers(Vt, Ft, W);
+    size_t num_layers = igl::copyleft::cgal::peel_winding_number_layers(Vt, Ft, W);
 
     ASSERT_EQ(2, num_layers);
 }
@@ -81,7 +81,7 @@ TEST(PeelWindingNumberLayers, NestedNonManifoldCubeDifferentLabel) {
     test_common::load_mesh("non_manifold_double_cube.obj", V, F);
 
     Eigen::VectorXi W;
-    size_t num_layers = igl::cgal::peel_winding_number_layers(V, F, W);
+    size_t num_layers = igl::copyleft::cgal::peel_winding_number_layers(V, F, W);
 
     ASSERT_EQ(2, num_layers);
 }
@@ -92,7 +92,7 @@ TEST(PeelWindingNumberLayers, NestedNonManifoldCubeDifferentLabel2) {
     test_common::load_mesh("non_manifold_double_cube_2.obj", V, F);
 
     Eigen::VectorXi W;
-    size_t num_layers = igl::cgal::peel_winding_number_layers(V, F, W);
+    size_t num_layers = igl::copyleft::cgal::peel_winding_number_layers(V, F, W);
 
     ASSERT_EQ(2, num_layers);
 }

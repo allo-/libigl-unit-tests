@@ -3,7 +3,6 @@
 #include <vector>
 
 #include <igl/extract_non_manifold_edge_curves.h>
-#include <igl/cgal/remesh_self_intersections.h>
 #include <igl/unique_edge_map.h>
 #include <igl/writeOBJ.h>
 
@@ -88,3 +87,39 @@ TEST(ExtractNonManifoldEdgeCurves, DuplicatedFace) {
         ASSERT_GT(uE2E.size(), uei);
     }
 }
+
+TEST(ExtractNonManifoldEdgeCurves, OpenMesh) {
+    Eigen::MatrixXd V(3, 3);
+    V << 0.0, 0.0, 0.0,
+         1.0, 0.0, 0.0,
+         0.0, 1.0, 0.0;
+    Eigen::MatrixXi F(1, 3);
+    F << 0, 1, 2;
+
+    Eigen::MatrixXi E, uE;
+    Eigen::VectorXi EMAP;
+    std::vector<std::vector<size_t> > uE2E;
+    igl::unique_edge_map(F, E, uE, EMAP, uE2E);
+
+    std::vector<std::vector<size_t> > curves;
+    igl::extract_non_manifold_edge_curves(F, EMAP, uE2E, curves);
+
+    ASSERT_EQ(1, curves.size());
+}
+
+TEST(ExtractNonManifoldEdgeCurves, DISABLED_ManifoldPatchDebug) {
+    Eigen::MatrixXd V;
+    Eigen::MatrixXi F;
+    test_common::load_mesh("manifold_patch_debug.obj", V, F);
+
+    Eigen::MatrixXi E, uE;
+    Eigen::VectorXi EMAP, P;
+    std::vector<std::vector<size_t> > uE2E;
+    igl::unique_edge_map(F, E, uE, EMAP, uE2E);
+
+    std::vector<std::vector<size_t> > curves;
+    igl::extract_non_manifold_edge_curves(F, EMAP, uE2E, curves);
+
+    ASSERT_EQ(6, curves.size());
+}
+

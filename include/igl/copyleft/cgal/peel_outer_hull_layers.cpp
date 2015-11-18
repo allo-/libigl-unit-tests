@@ -2,9 +2,9 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-#include <igl/cgal/peel_outer_hull_layers.h>
-#include <igl/cgal/remesh_self_intersections.h>
-#include <igl/cgal/RemeshSelfIntersectionsParam.h>
+#include <igl/copyleft/cgal/peel_outer_hull_layers.h>
+#include <igl/copyleft/cgal/remesh_self_intersections.h>
+#include <igl/copyleft/cgal/RemeshSelfIntersectionsParam.h>
 #include <igl/per_face_normals.h>
 #include <igl/remove_unreferenced.h>
 #include <igl/writeOBJ.h>
@@ -27,8 +27,8 @@ TEST(PeelOuterHullLayers, TwoCubes) {
     MatrixXe Vs;
     Eigen::MatrixXi Fs, IF;
     Eigen::VectorXi J, IM;
-    igl::cgal::RemeshSelfIntersectionsParam param;
-    igl::cgal::remesh_self_intersections(V, F, param, Vs, Fs, IF, J, IM);
+    igl::copyleft::cgal::RemeshSelfIntersectionsParam param;
+    igl::copyleft::cgal::remesh_self_intersections(V, F, param, Vs, Fs, IF, J, IM);
 
     std::for_each(Fs.data(),Fs.data()+Fs.size(),
             [&IM](int & a){ a=IM(a); });
@@ -38,7 +38,7 @@ TEST(PeelOuterHullLayers, TwoCubes) {
     const size_t num_faces = Ft.rows();
 
     Eigen::VectorXi I, flipped;
-    size_t num_peels = igl::cgal::peel_outer_hull_layers(Vt, Ft, I, flipped);
+    size_t num_peels = igl::copyleft::cgal::peel_outer_hull_layers(Vt, Ft, I, flipped);
 
     Eigen::MatrixXd vertices(Vt.rows(), Vt.cols());
     std::transform(Vt.data(), Vt.data() + Vt.rows() * Vt.cols(),
@@ -64,8 +64,8 @@ TEST(PeelOuterHullLayers, CubeWithFold) {
     MatrixXe Vs;
     Eigen::MatrixXi Fs, IF;
     Eigen::VectorXi J, IM;
-    igl::cgal::RemeshSelfIntersectionsParam param;
-    igl::cgal::remesh_self_intersections(V, F, param, Vs, Fs, IF, J, IM);
+    igl::copyleft::cgal::RemeshSelfIntersectionsParam param;
+    igl::copyleft::cgal::remesh_self_intersections(V, F, param, Vs, Fs, IF, J, IM);
 
     std::for_each(Fs.data(),Fs.data()+Fs.size(),
             [&IM](int & a){ a=IM(a); });
@@ -74,5 +74,5 @@ TEST(PeelOuterHullLayers, CubeWithFold) {
     igl::remove_unreferenced(Vs,Fs,Vt,Ft,IM);
 
     Eigen::VectorXi I, flipped;
-    size_t num_peels = igl::cgal::peel_outer_hull_layers(Vt, Ft, I, flipped);
+    size_t num_peels = igl::copyleft::cgal::peel_outer_hull_layers(Vt, Ft, I, flipped);
 }
