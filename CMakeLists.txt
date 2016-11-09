@@ -18,6 +18,11 @@ if (NOT LIBIGL_FOUND)
    message(FATAL_ERROR "libigl not found --- You can download it using: \n git clone --recursive https://github.com/libigl/libigl.git ${PROJECT_SOURCE_DIR}/../libigl")
 endif()
 
+if (NOT EIGEN_FOUND)
+    find_package(Eigen)
+    include_directories(Eigen ${EIGEN_INCLUDE_DIRS})
+endif (NOT EIGEN_FOUND)
+
 if(MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /bigobj" ) ### Enable parallel compilation for Visual Studio
   set(CMAKE_CXX_FLAGS_RELEASE "/MT")
