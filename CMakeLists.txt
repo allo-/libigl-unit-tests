@@ -40,12 +40,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
 # considerably reduces the compilation times
 option(LIBIGL_USE_STATIC_LIBRARY "Use LibIGL as static library" OFF)
 # add a customizable menu bar
+set(CMAKE_MODULE_PATH "${LIBIGL_INCLUDE_DIR}/../shared/cmake")
 option(LIBIGL_WITH_NANOGUI     "Use Nanogui menu"   OFF)
 # libigl options: choose your dependencies (by default everything is OFF except opengl) 
 option(LIBIGL_WITH_VIEWER      "Use OpenGL viewer"  OFF)
 option(LIBIGL_WITH_OPENGL      "Use OpenGL"         OFF)
 option(LIBIGL_WITH_GLFW        "Use GLFW"           OFF)
-option(LIBIGL_WITH_BBW         "Use BBW"            OFF)
 option(LIBIGL_WITH_EMBREE      "Use Embree"         OFF)
 option(LIBIGL_WITH_PNG         "Use PNG"            OFF)
 option(LIBIGL_WITH_TETGEN      "Use Tetgen"         OFF)
@@ -53,15 +53,19 @@ option(LIBIGL_WITH_TRIANGLE    "Use Triangle"       OFF)
 option(LIBIGL_WITH_XML         "Use XML"            OFF)
 option(LIBIGL_WITH_LIM         "Use LIM"            OFF)
 option(LIBIGL_WITH_COMISO      "Use CoMiso"         OFF)
-option(LIBIGL_WITH_MATLAB      "Use Matlab"         OFF) # This option is not supported yet
-option(LIBIGL_WITH_MOSEK       "Use MOSEK"          OFF) # This option is not supported yet
-option(LIBIGL_WITH_CGAL        "Use CGAL"           OFF)
+find_package(MATLAB QUIET)
+option(LIBIGL_WITH_MATLAB           "Use Matlab"         "${MATLAB_FOUND}")
+find_package(MOSEK)
+option(LIBIGL_WITH_MOSEK            "Use MOSEK"          "${MOSEK_FOUND}")
+find_package(CGAL QUIET)
+option(LIBIGL_WITH_CGAL             "Use CGAL"           "${CGAL_FOUND}")
 if(LIBIGL_WITH_CGAL) # Do not remove or move this block, the cgal build system fails without it
   find_package(CGAL REQUIRED)
   set(CGAL_DONT_OVERRIDE_CMAKE_FLAGS TRUE CACHE BOOL "CGAL's CMAKE Setup is super annoying ")
   include(${CGAL_USE_FILE})
 endif()
 add_subdirectory("${LIBIGL_INCLUDE_DIR}/../shared/cmake" "libigl")
+
 # libigl information 
 message("libigl includes: ${LIBIGL_INCLUDE_DIRS}")
 message("libigl libraries: ${LIBIGL_LIBRARIES}")
@@ -78,9 +82,12 @@ include(Settings.cmake)
 # Set up common libraries to link against
 set(COMMON_LIBRARIES ${GTEST_BOTH_LIBRARIES} ${LIBIGL_LIBRARIES} ${LIBIGL_EXTRA_LIBRARIES})
 
-# Process code in each subdirectories
-add_subdirectory(${PROJECT_SOURCE_DIR}/include/igl)
-if(CGAL_FOUND)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/include/igl/copyleft/boolean)
+# Process code in each subdirectories: add in decreasing order of complexity
+# (last added will run first and those should be the fastest tests)
+if(LIBIGL_WITH_MOSEK)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/include/igl/mosek)
+endif()
+if(LIBIGL_WITH_CGAL)
   add_subdirectory(${PROJECT_SOURCE_DIR}/include/igl/copyleft/cgal)
-endif(CGAL_FOUND)
+endif()
+add_subdirectory(${PROJECT_SOURCE_DIR}/include/igl)

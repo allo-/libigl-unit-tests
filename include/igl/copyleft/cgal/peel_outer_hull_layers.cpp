@@ -11,7 +11,7 @@
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 
-TEST(PeelOuterHullLayers, TwoCubes) {
+TEST(copyleft_cgal_peel_outer_hull_layers, TwoCubes) {
     Eigen::MatrixXd V;
     Eigen::MatrixXi F;
     test_common::load_mesh("two-boxes-bad-self-union.ply", V, F);
@@ -64,8 +64,8 @@ TEST(PeelOuterHullLayers, CubeWithFold) {
     MatrixXe Vs;
     Eigen::MatrixXi Fs, IF;
     Eigen::VectorXi J, IM;
-    igl::cgal::RemeshSelfIntersectionsParam param;
-    igl::cgal::remesh_self_intersections(V, F, param, Vs, Fs, IF, J, IM);
+    igl::copyleft::cgal::RemeshSelfIntersectionsParam param;
+    igl::copyleft::cgal::remesh_self_intersections(V, F, param, Vs, Fs, IF, J, IM);
 
     std::for_each(Fs.data(),Fs.data()+Fs.size(),
             [&IM](int & a){ a=IM(a); });
@@ -74,5 +74,5 @@ TEST(PeelOuterHullLayers, CubeWithFold) {
     igl::remove_unreferenced(Vs,Fs,Vt,Ft,IM);
 
     Eigen::VectorXi I, flipped;
-    size_t num_peels = igl::cgal::peel_outer_hull_layers(Vt, Ft, I, flipped);
+    size_t num_peels = igl::copyleft::cgal::peel_outer_hull_layers(Vt, Ft, I, flipped);
 }
