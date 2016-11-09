@@ -1,0 +1,22 @@
+language: cpp
+sudo: false
+matrix:
+  include:
+    - os: osx
+      compiler: clang
+      script:
+        # - brew update
+        # - brew upgrade cmake
+        # - brew upgrade cgal
+        - git submodule update --init --recursive
+        - git clone --recursive https://github.com/libigl/libigl.git
+        - mkdir build-header
+        - cd build-header
+        - cmake ../
+        - make -j 2
+        - cd ..
+        - mkdir build-static
+        - cd build-static
+        - cmake -DLIBIGL_USE_STATIC_LIBRARY=ON ../
+        - make -j 2
+
