@@ -50,7 +50,7 @@ namespace mesh_boolean_test {
         ASSERT_EQ(euler, 2 - 2 * genus);
     }
 
-TEST(MeshBoolean, DISABLED_TwoCubes) {
+TEST(MeshBoolean, TwoCubes) {
     Eigen::MatrixXd V1;
     Eigen::MatrixXi F1;
     test_common::load_mesh("two-boxes-bad-self-union.ply", V1, F1);
@@ -98,6 +98,45 @@ TEST(MeshBoolean, IntersectWithSelf) {
     assert_no_exterior_edges(Fo);
     assert_is_manifold(Vo, Fo);
     assert_genus_eq(Vo, Fo, 0);
+}
+
+TEST(MeshBoolean, UnionWithSelf) {
+    Eigen::MatrixXd V1, Vo;
+    Eigen::MatrixXi F1, Fo;
+    test_common::load_mesh("cube.obj", V1, F1);
+
+    igl::copyleft::cgal::mesh_boolean(V1, F1, V1, F1,
+            igl::MESH_BOOLEAN_TYPE_UNION,
+            Vo, Fo);
+
+    assert_no_exterior_edges(Fo);
+    assert_is_manifold(Vo, Fo);
+    assert_genus_eq(Vo, Fo, 0);
+}
+
+TEST(MeshBoolean, MinusSelf) {
+    Eigen::MatrixXd V1, Vo;
+    Eigen::MatrixXi F1, Fo;
+    test_common::load_mesh("cube.obj", V1, F1);
+
+    igl::copyleft::cgal::mesh_boolean(V1, F1, V1, F1,
+            igl::MESH_BOOLEAN_TYPE_MINUS,
+            Vo, Fo);
+
+    ASSERT_EQ(0, Vo.rows());
+    ASSERT_EQ(0, Fo.rows());
+}
+
+TEST(MeshBoolean, EmptyMeshShouldNOTFail) {
+    Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor> V1, V2, Vo;
+    Eigen::Matrix<int, Eigen::Dynamic, 3, Eigen::RowMajor> F1, F2, Fo;
+
+    igl::copyleft::cgal::mesh_boolean(V1, F1, V2, F2,
+            igl::MESH_BOOLEAN_TYPE_UNION,
+            Vo, Fo);
+
+    ASSERT_EQ(0, Vo.rows());
+    ASSERT_EQ(0, Fo.rows());
 }
 
 }
