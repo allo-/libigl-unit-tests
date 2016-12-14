@@ -50,7 +50,7 @@ namespace mesh_boolean_test {
         ASSERT_EQ(euler, 2 - 2 * genus);
     }
 
-TEST(MeshBoolean, TwoCubes) {
+TEST(MeshBoolean, DISABLED_TwoCubes) {
     Eigen::MatrixXd V1;
     Eigen::MatrixXi F1;
     test_common::load_mesh("two-boxes-bad-self-union.ply", V1, F1);
