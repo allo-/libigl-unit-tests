@@ -1,6 +1,7 @@
 #include <test_common.h>
 
 #include <vector>
+#include <Eigen/Geometry>
 
 #include <igl/copyleft/cgal/mesh_boolean.h>
 #include <igl/MeshBooleanType.h>
@@ -8,6 +9,7 @@
 #include <igl/is_vertex_manifold.h>
 #include <igl/unique_edge_map.h>
 #include <igl/is_edge_manifold.h>
+#include <igl/write_triangle_mesh.h>
 
 namespace mesh_boolean_test {
 
@@ -137,6 +139,62 @@ TEST(MeshBoolean, EmptyMeshShouldNOTFail) {
 
     ASSERT_EQ(0, Vo.rows());
     ASSERT_EQ(0, Fo.rows());
+}
+
+TEST(MeshBoolean, CubeWithFold) {
+    Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor> V1, V2, Vo;
+    Eigen::Matrix<int, Eigen::Dynamic, 3, Eigen::RowMajor> F1, F2, Fo;
+    test_common::load_mesh("cube_with_fold.ply", V1, F1);
+
+    // Self union.
+    igl::copyleft::cgal::mesh_boolean(V1, F1, V2, F2,
+            igl::MESH_BOOLEAN_TYPE_UNION,
+            Vo, Fo);
+
+    assert_no_exterior_edges(Fo);
+    assert_is_manifold(Vo, Fo);
+    assert_genus_eq(Vo, Fo, 0);
+}
+
+TEST(MeshBoolean, UnionWithRotatedSelf) {
+    Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor> V1, V2, Vo;
+    Eigen::Matrix<int, Eigen::Dynamic, 3, Eigen::RowMajor> F1, F2, Fo;
+    test_common::load_mesh("cube_with_fold.ply", V1, F1);
+
+    Eigen::Vector3d axis(1.0, 1.0, 1.0);
+    axis.normalize();
+    Eigen::AngleAxis<double> rot(M_PI - 1e-12, axis);
+
+    V2 = (rot.toRotationMatrix() * V1.transpose()).transpose();
+    F2 = F1;
+
+    igl::copyleft::cgal::mesh_boolean(V1, F1, V2, F2,
+            igl::MESH_BOOLEAN_TYPE_UNION,
+            Vo, Fo);
+
+    assert_no_exterior_edges(Fo);
+    assert_is_manifold(Vo, Fo);
+    assert_genus_eq(Vo, Fo, 0);
+}
+
+TEST(MeshBoolean, RepeatedUnionWithRotatedSelf) {
+    const size_t N = 10;
+    Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor> V1, V2, Vo;
+    Eigen::Matrix<int, Eigen::Dynamic, 3, Eigen::RowMajor> F1, F2, Fo;
+    test_common::load_mesh("cube.obj", V1, F1);
+
+    Eigen::Vector3d axis(1.0, 1.0, 1.0);
+    axis.normalize();
+
+    for (size_t i=0; i<N; i++) {
+        Eigen::AngleAxis<double> rot(double(i)/double(N) * 2 * M_PI, axis);
+        V2 = (rot.toRotationMatrix() * V1.transpose()).transpose();
+        F2 = F1;
+        igl::copyleft::cgal::mesh_boolean(Vo, Fo, V2, F2,
+                igl::MESH_BOOLEAN_TYPE_UNION,
+                Vo, Fo);
+    }
+    assert_no_exterior_edges(Fo);
 }
 
 }
