@@ -43,11 +43,12 @@ INSTANTIATE_TEST_CASE_P
 (
   suite,
   ListToMatrixTest,
-  ::testing::ValuesIn<std::vector<list_to_matrix::NM> >({
-    {100,4},
-    {4,100},
-    {100,1},
-    {1,100},
+  ::testing::ValuesIn<std::vector<list_to_matrix::NM> >(
+    std::vector<list_to_matrix::NM>{
+    list_to_matrix::NM{100,4},
+    list_to_matrix::NM{4,100},
+    list_to_matrix::NM{100,1},
+    list_to_matrix::NM{1,100},
     }),
   list_to_matrix::NM_test_name
 );
